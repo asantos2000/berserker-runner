@@ -1,0 +1,39 @@
+load-generator-configuration:
+  data-source-configuration-name: Ranger
+  rate-generator-configuration-name: default
+  worker-configuration-name: Kafka
+  metrics-reporter-configuration-name: SimpleConsoleReporter
+  thread-count: 4
+  queue-capacity: 1000
+
+data-source-configuration:
+  values:
+    values: circular([random(0.0..100),random(100..600),random(600..1000)])
+    user:
+      id: circular(1..2000000, 1)
+      username: string("{}{}", random(["aragorn", "johnsnow", "mike", "batman"]), random(1..100))
+      firstName: random(["Peter", "Rodger", "Michael"])
+      lastName: random(["Smith", "Cooper", "Stark", "Grayson", "Atkinson", "Durant"])
+      maried: false
+      accountBalance: random(0.0..10000.0)
+      address:
+        city: random(["New York", "Washington", "San Francisco"])
+        street: random(["2nd St", "5th Avenue", "21st St", "Main St"])
+        houseNumber: random(1..55)
+    kafkaMessage:
+      key: randomContentString(10, ['A'..'Z', '0'..'9'])
+      value: json($user)
+  output: $kafkaMessage
+
+rate-generator-configuration:
+  rates:
+    r: 100
+  output: $r
+
+worker-configuration:
+  async: true
+  topic: load-test-1
+  producer-configuration:
+    bootstrap.servers: localhost:9092
+
+metrics-reporter-configuration:
