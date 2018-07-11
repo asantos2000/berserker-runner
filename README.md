@@ -95,7 +95,7 @@ docker build -t adsantos/berserker-runner:0.0.12 .
 ### Running with docker
 
 ```bash
-docker run -it --net=host -v $PWD:/app adsantos/berserker-runner:0.0.12 -c kafka-local.yml
+docker run -it --rm --name load-test --net=host -v $PWD:/config adsantos/berserker-runner:0.0.12 -c /config/kafka-local.yml
 ```
 
 ## Metrics gathering
